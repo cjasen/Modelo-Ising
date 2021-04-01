@@ -1,0 +1,30 @@
+main()
+{
+lee_input(); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met
+Inicializa_Random();
+Genera_configuracion_Inicial(); //Puede generarla o leerla
+N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero
+beta=beta_inicial;
+for(sentido=0;sentido<2;sentido++)
+{
+for(N_betas=0;N_betas<N_pasos;N_beta++)
+{
+Calcula_prob(beta); //Calculamos la tabla de probabilidad para la nueva beta
+for(N_Met=0;N_Met<N_Ter;N_Met++) //Proceso de termallizacion
+Metropolis();
+Inicia_Vector_Medidas(N_med); //Pon a cero los acumuladores
+for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
+{
+for(N_M=0;N_M<N_Met;N_M++) //Iteraciones de Monte Carlo
+Metropolis();
+Medidas(); //Mido
+Construir_Vector_Medidas(N_m); //Guarda resultados en un vector
+}
+Calcula_Valores_Medios(); //Calcula las medias y errores para ese valor de beta
+Escribe_Valores_Medios(); // Escribe beta, medias y errores en tipo append
+Escribe_Informacion_en_Pantalla(); // VA todo bien??
+beta+=delta_beta; //Incremento el valor de beta
+}
+delta_beta=-delta_beta
+}
+}
