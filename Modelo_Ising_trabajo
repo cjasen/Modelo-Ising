@@ -1,30 +1,93 @@
-main()
-{
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+#include <string.h>
+
+#define L 4
+#define DEBUG
+
+void metropolis(int[], int[], int[], int[], char[], double[]);
+void calcular_prob(double[], double);
+
+#define NormRANu (2.3283063671E-10F)
+unsigned int irr[256];
+unsigned int ir1;
+unsigned char ind_ran,ig1,ig2,ig3;
+extern float random(void);
+extern void ini_ran(int SEMILLA);
+
+main() {
   lee_input(); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met
-  Inicializa_Random();
+  ini_ran(); //Inicializamos el generador aleatorio
   Genera_configuracion_Inicial(); //Puede generarla o leerla
   N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero
   beta=beta_inicial;
-  for(sentido=0;sentido<2;sentido++)
-  {
-  for(N_betas=0;N_betas<N_pasos;N_beta++)
-  {
-  Calcula_prob(beta); //Calculamos la tabla de probabilidad para la nueva beta
-  for(N_Met=0;N_Met<N_Ter;N_Met++) //Proceso de termallizacion
-  Metropolis();
-  Inicia_Vector_Medidas(N_med); //Pon a cero los acumuladores
-  for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
-  {
-  for(N_M=0;N_M<N_Met;N_M++) //Iteraciones de Monte Carlo
-  Metropolis();
-  Medidas(); //Mido
-  Construir_Vector_Medidas(N_m); //Guarda resultados en un vector
+  for(sentido=0;sentido<2;sentido++)  {
+    for(N_betas=0;N_betas<N_pasos;N_beta++)  {
+      Calcula_prob(beta); //Calculamos la tabla de probabilidad para la nueva beta
+      for(N_Met=0;N_Met<N_Ter;N_Met++) //Proceso de termallizacion
+      Metropolis();
+      Inicia_Vector_Medidas(N_med); //Pon a cero los acumuladores
+      for(N_m=0;N_m<N_med;N_m++){ //bucle en medidas
+        for(N_M=0;N_M<N_Met;N_M++) //Iteraciones de Monte Carlo
+        Metropolis();
+        Medidas(); //Mido
+        Construir_Vector_Medidas(N_m); //Guarda resultados en un vector
+      }
+      Calcula_Valores_Medios(); //Calcula las medias y errores para ese valor de beta
+      Escribe_Valores_Medios(); // Escribe beta, medias y errores en tipo append
+      Escribe_Informacion_en_Pantalla(); // VA todo bien??
+      beta+=delta_beta; //Incremento el valor de beta
+     }
+     delta_beta=-delta_beta
+    }
   }
-  Calcula_Valores_Medios(); //Calcula las medias y errores para ese valor de beta
-  Escribe_Valores_Medios(); // Escribe beta, medias y errores en tipo append
-  Escribe_Informacion_en_Pantalla(); // VA todo bien??
-  beta+=delta_beta; //Incremento el valor de beta
-  }
-  delta_beta=-delta_beta
+
+void metropolis(int xp[], int yp[], int xm[], int ym[], char s[], double prob[]){
+    int indice, n=0;
+    for (int y=0; y<L; y++){
+        for (int x=0; x<L; x++){
+            /* Calculamos el indice del vectro prob[] */
+            indice=s[n]*(s[n+xp[x]]+s[n+yp[y]]+s[n+xm[x]]+s[n+ym[y]])/2+2; 
+            if (random()<prob[indice]) s[n]=-s[n]; //Aceptamos o no el cambio de spin
+            n++;
+        }
+    }
 }
+
+void calcular_prob (double prob[], double beta){
+    /* Calculamos, para cada beta, los posibles valores
+       de la diferencia de energia al cambiar un spin,
+       esta funcion se implementa en la funcion metropolis()*/
+       
+    prob[0]=exp(8*beta);
+    prob[1]=exp(4*beta);
+    prob[2]=1;
+    prob[3]=exp(-4*beta);
+    prob[4]=exp(-8*beta);
+}
+
+void ini_ran(int SEMILLA){ //Parisi-Rupano, NO TOCAR
+    int INI,FACTOR,SUM,i;
+    srand(SEMILLA);
+    INI=SEMILLA;
+    FACTOR=67397;
+    SUM=7364893;
+    for(i=0;i<256;i++) {
+        INI=(INI*FACTOR+SUM);
+        irr[i]=INI;
+    }
+    ind_ran=ig1=ig2=ig3=0;
+}
+
+float random(void){ //Nº aleatorio entre [0,1)
+    float r;
+    ig1=ind_ran-24;
+    ig2=ind_ran-55;
+    ig3=ind_ran-61;
+    irr[ind_ran]=irr[ig1]+irr[ig2];
+    ir1=(irr[ind_ran]^irr[ig3]);
+    ind_ran++;
+    r=ir1*NormRANu;
+    return r;
 }
