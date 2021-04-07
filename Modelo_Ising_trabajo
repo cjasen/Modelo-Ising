@@ -4,12 +4,13 @@
 #include <string.h>
 
 #define L 4
+#define V L*L
 #define DEBUG
 
 char leer_flag(void);
-void Genera_configuracion_Inicial(char *s, int V0, int L0); //Puede generarla o leerla
+void Genera_configuracion_Inicial(char *s, int V0); //Puede generarla o leerla
 void lee_input (double beta_0, double beta_f, double dbeta, int N_Ter, int N_med, int N_met, int semillarapuano); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
-void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym, int L0); //inicializo los vectores de movimiento
+void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym); //inicializo los vectores de movimiento
 void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
 void calcular_prob(double[], double); //Necesario para optimizar la funcion metropolis()
 
@@ -22,18 +23,18 @@ extern float random(void);
 extern void ini_ran(int SEMILLA);
 
 main() {
-  double beta_inicial, beta_final, delta_beta;
+  double beta, beta_inicial, beta_final, delta_beta;
   double prob[];
-  int N_Ter, N_med, N_Met, tipo_semilla;
+  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla;
   int xp[L], xm[L], yp[L], ym[L];
-  char s[L*L];
+  char s[V];
 
-  inicializo_direcciones(xp, yp, xm, ym, L); 
+  inicializo_direcciones(xp, yp, xm, ym); 
   lee_input(beta_inicial, beta_final, delta_beta, N_Ter, N_med, N_Met, tipo_semilla); 
   ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no sé poner el tiempo del sistema pues aun no tengo la funcion
-  Genera_configuracion_Inicial(spin,V,L); 
+  Genera_configuracion_Inicial(s); 
 
-  N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero Y DIRÍA QUE NO ESTÁ DECLARADO
+  N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero 
   beta=beta_inicial;
   for(int sentido=0;sentido<2;sentido++)
   {
@@ -95,14 +96,14 @@ char leer_flag(void){ //lee el tipo de configuracion que queremos tener
     return x;
 }
 
-void Genera_configuracion_Inicial(char *s, int V0, int L0){ //crea la configuracion inicial
+void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
     int i,j;
     char bandera;
     bandera=leer_flag();
     FILE *fconfig;
     switch(bandera){
     case 0: // crea una distribucion random (¿debería implementar parisi-rapuano?)
-        for(i=0;i<V0;i++){
+        for(i=0;i<V;i++){
             if(random()<0.5)
                 s[i]=1;
             else
@@ -111,11 +112,11 @@ void Genera_configuracion_Inicial(char *s, int V0, int L0){ //crea la configurac
         break;
     case 1: //crea una distribucion uniforme (todo -1 o 1)  
         if(random()<0.5){
-            for(i=0;i<V0;i++)
+            for(i=0;i<V;i++)
                 s[i]=1;
         }
         else{
-            for(i=0;i<V0;i++)
+            for(i=0;i<V;i++)
                 s[i]=-1;
         }
         break;
@@ -125,15 +126,15 @@ void Genera_configuracion_Inicial(char *s, int V0, int L0){ //crea la configurac
             exit(3);
         }
         else {
-            for(i=0;i<V0;i++)
+            for(i=0;i<V;i++)
                 fscanf(fconfig,"%c",&s[i]);
         }
         fclose(fconfig);
         break;
     case 3: // esta será la que la crea en ajedrez
-        for(j=0;j<L0;j++)
-            for(i=0;i<L0;i++){
-                s[i+(L0*j)]=pow(-1,i+j);
+        for(j=0;j<L;j++)
+            for(i=0;i<L;i++){
+                s[i+(L*j)]=pow(-1,i+j);
             }
         break;
     }
@@ -150,20 +151,20 @@ void lee_input (double beta_0, double beta_f, double dbeta, int N_Ter, int N_med
     }
 }
 
-void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym, int L0){
+void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym){
     int i;
-    for (i=0;i<(L0-1);i++)
+    for (i=0;i<(L-1);i++)
         xp[i]=1;
-    xp[L0-1]=-(L0-1);
-    for (i=0;i<(L0-1);i++)
-        yp[i]=L0;
-    yp[L0-1]=-L0*(L0-1);
-    for(i=1;i<L0;i++)
+    xp[L-1]=-(L-1);
+    for (i=0;i<(L-1);i++)
+        yp[i]=L;
+    yp[L-1]=-L*(L-1);
+    for(i=1;i<L;i++)
         xm[i]=-1;
-    xm[0]=(L0-1);
-    for(i=1;i<L0;i++)
-        ym[i]=-L0;
-    ym[0]=L0*(L0-1);
+    xm[0]=(L-1);
+    for(i=1;i<L;i++)
+        ym[i]=-L;
+    ym[0]=L*(L-1);
 }
 
 void ini_ran(int SEMILLA){ //Parisi-Rupano, NO TOCAR
