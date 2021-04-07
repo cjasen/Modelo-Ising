@@ -6,6 +6,7 @@
 #define L 4
 #define V L*L
 #define DEBUG
+#define N_Datos_Max 100000
 
 char leer_flag(void);
 void Genera_configuracion_Inicial(char *s, int V0); //Puede generarla o leerla
@@ -13,6 +14,8 @@ void lee_input (double beta_0, double beta_f, double dbeta, int N_Ter, int N_med
 void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym); //inicializo los vectores de movimiento
 void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
 void calcular_prob(double[], double); //Necesario para optimizar la funcion metropolis()
+void med_error(double *datos, int N_datos, double *media, double *varianza);//calcula la media y el error
+void escribe_resultados(double result[][N_Datos_Max], int N_betas);
 
 ///Parisi-Rupano
 #define NormRANu (2.3283063671E-10F)
@@ -22,9 +25,15 @@ unsigned char ind_ran,ig1,ig2,ig3;
 extern float random(void);
 extern void ini_ran(int SEMILLA);
 
+FILE*fout;//creo el archivo de resultados
+
 main() {
-  double beta, beta_inicial, beta_final, delta_beta;
-  double prob[];
+  
+  fout=fopen("datos.dat","wt");//esto sirve para reiniciar el archivo de resultados al usar el programa después de haberlo usado
+  fclose(fout);
+  fout=fopen("datos.dat","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
+  double beta, beta_inicial, beta_final, delta_beta, e,ee, emdeia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
+  double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max];
   int N_Ter, N_med, N_Met, N_pasos, tipo_semilla;
   int xp[L], xm[L], yp[L], ym[L];
   char s[V];
@@ -40,23 +49,43 @@ main() {
   {
     for(N_betas=0;N_betas<N_pasos;N_beta++)
     {
+      for(int j=0;j<N_pasos;j++){//al principio de cada bucle es necesario reiniciar las variables que guardan los resultados a 0
+              eres[j]=0;
+              mres[j]=0;
+       }
       calcular_prob(prob,beta); //Calculamos la tabla de probabilidad para la nueva beta
       for(N_Met=0;N_Met<N_Ter;N_Met++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion       
-      Inicia_Vector_Medidas(N_med); //Pon a cero los acumuladores
       for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
       {
         for(N_M=0;N_M<N_Met;N_M++) metropolis(xp,yp,xm,ym,s,prob); //Iteraciones de Monte Carlo
-        Medidas(); //Mido
-        Construir_Vector_Medidas(N_m); //Guarda resultados en un vector
+        Medidas(); //Mido, de aqui sale en cada medicion e y m (si no me equivoco, David)
+        eres[N_m]=e;//Guarda resultados en un cada vector correspondiente
+        mres[N_m]=fabs(m);//lo que se busca es la media del valor absoluto de m
       }
-      Calcula_Valores_Medios(); //Calcula las medias y errores para ese valor de beta
-      Escribe_Valores_Medios(); // Escribe beta, medias y errores en tipo append
+      med_error(eres,N_med,&emedia,&ee);//hago la media y el error de los resultados
+      med_error(mres,N_med,&mmedia,&em);
+      for(int j=0;j<N_Met;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
+                eres[j]=eres[j]*eres[j];
+                mres[j]=mres[j]*mres[j];
+        }
+      med_error(eres,N_med,&e2,&aux);//calculo la media de e^2 y m^2, como no necesito el error de estos resultados uso el auxiliar aux
+      med_error(mres,N_med,&m2,&aux);
+      result[0][N_betas]=beta;//introduzco los datos dentro de cada variable
+      result[1][N_betas]=emedia;
+      result[2][N_betas]=ee;
+      result[3][N_betas]=mmedia;
+      result[4][N_betas]=em;
+      result[5][N_betas]=e2;
+      result[6][N_betas]=m2;
       Escribe_Informacion_en_Pantalla(); // VA todo bien??
       beta+=delta_beta; //Incremento el valor de beta
-    }
-  delta_beta=-delta_beta
-  }
-}
+      }
+    delta_beta=-delta_beta;
+   }
+  escribe_resultados(result,N_pasos);
+  fclose(fout);
+  return 0;
+ }
 
 void metropolis(int xp[], int yp[], int xm[], int ym[], char s[], double prob[]){
     int indice, n=0;
@@ -190,4 +219,22 @@ float random(void){ //Nº aleatorio entre [0,1)
     ind_ran++;
     r=ir1*NormRANu;
     return r;
+}
+
+void med_error(double *datos, int N_datos, double *media, double *e){
+    double sumx=0,sumx2=0;
+    for(int i=0;i<N_datos;i++){
+        sumx=sumx+datos[i];
+        sumx2=sumx2+(pow(datos[i],2));
+    }
+    *media=sumx/N_datos;
+    sumx2=sumx2/N_datos;
+    sumx=pow(*media,2);
+    *e=sqrt((sumx2-sumx)/(N_datos-1));
+}
+
+void escribe_resultados(double result[][N_Datos_Max], int N_betas){
+    for(int i=0;i<N_betas;i++){
+        fprintf(fout,"%g\t%g\t%g\t%g\t%g\t%g\t%g\n",result[0][i],result[1][i],result[2][i],result[3][i],result[4][i],result[5][i],result[6][i]);//escribo los resultados
+    }
 }
