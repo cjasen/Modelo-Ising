@@ -6,9 +6,14 @@
 #define L 4
 #define DEBUG
 
-void metropolis(int[], int[], int[], int[], char[], double[]);
-void calcular_prob(double[], double);
+char leer_flag(void);
+void Genera_configuracion_Inicial(char *s, int V0, int L0); //Puede generarla o leerla
+void lee_input (double beta_0, double beta_f, double dbeta, int N_Ter, int N_med, int N_met, int semillarapuano); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
+void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym, int L0); //inicializo los vectores de movimiento
+void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
+void calcular_prob(double[], double); //Necesario para optimizar la funcion metropolis()
 
+///Parisi-Rupano
 #define NormRANu (2.3283063671E-10F)
 unsigned int irr[256];
 unsigned int ir1;
@@ -17,20 +22,29 @@ extern float random(void);
 extern void ini_ran(int SEMILLA);
 
 main() {
-  lee_input(); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met
-  ini_ran(); //Inicializamos el generador aleatorio
-  Genera_configuracion_Inicial(); //Puede generarla o leerla
-  N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero
+  double beta_inicial, beta_final, delta_beta;
+  double prob[];
+  int N_Ter, N_med, N_Met, tipo_semilla;
+  int xp[L], xm[L], yp[L], ym[L];
+  char s[L*L];
+
+  inicializo_direcciones(xp, yp, xm, ym, L); 
+  lee_input(beta_inicial, beta_final, delta_beta, N_Ter, N_med, N_Met, tipo_semilla); 
+  ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no sé poner el tiempo del sistema pues aun no tengo la funcion
+  Genera_configuracion_Inicial(spin,V,L); 
+
+  N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero Y DIRÍA QUE NO ESTÁ DECLARADO
   beta=beta_inicial;
-  for(sentido=0;sentido<2;sentido++)  {
-    for(N_betas=0;N_betas<N_pasos;N_beta++)  {
-      Calcula_prob(beta); //Calculamos la tabla de probabilidad para la nueva beta
-      for(N_Met=0;N_Met<N_Ter;N_Met++) //Proceso de termallizacion
-      Metropolis();
+  for(int sentido=0;sentido<2;sentido++)
+  {
+    for(N_betas=0;N_betas<N_pasos;N_beta++)
+    {
+      calcular_prob(prob,beta); //Calculamos la tabla de probabilidad para la nueva beta
+      for(N_Met=0;N_Met<N_Ter;N_Met++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion       
       Inicia_Vector_Medidas(N_med); //Pon a cero los acumuladores
-      for(N_m=0;N_m<N_med;N_m++){ //bucle en medidas
-        for(N_M=0;N_M<N_Met;N_M++) //Iteraciones de Monte Carlo
-        Metropolis();
+      for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
+      {
+        for(N_M=0;N_M<N_Met;N_M++) metropolis(xp,yp,xm,ym,s,prob); //Iteraciones de Monte Carlo
         Medidas(); //Mido
         Construir_Vector_Medidas(N_m); //Guarda resultados en un vector
       }
@@ -38,10 +52,10 @@ main() {
       Escribe_Valores_Medios(); // Escribe beta, medias y errores en tipo append
       Escribe_Informacion_en_Pantalla(); // VA todo bien??
       beta+=delta_beta; //Incremento el valor de beta
-     }
-     delta_beta=-delta_beta
     }
+  delta_beta=-delta_beta
   }
+}
 
 void metropolis(int xp[], int yp[], int xm[], int ym[], char s[], double prob[]){
     int indice, n=0;
@@ -65,6 +79,91 @@ void calcular_prob (double prob[], double beta){
     prob[2]=1;
     prob[3]=exp(-4*beta);
     prob[4]=exp(-8*beta);
+}
+
+char leer_flag(void){ //lee el tipo de configuracion que queremos tener
+    char x;
+    FILE *flag;
+    if ((flag=fopen("bandera.txt","wt"))==NULL){
+        printf("el archivo que lee bandera no existe o no se puede abrir");
+        exit(2);
+    }
+    else {
+        fscanf(flag,"%d",&x); //revisar si he hecho bien en pasar puntero
+        fclose(flag);
+    }
+    return x;
+}
+
+void Genera_configuracion_Inicial(char *s, int V0, int L0){ //crea la configuracion inicial
+    int i,j;
+    char bandera;
+    bandera=leer_flag();
+    FILE *fconfig;
+    switch(bandera){
+    case 0: // crea una distribucion random (¿debería implementar parisi-rapuano?)
+        for(i=0;i<V0;i++){
+            if(random()<0.5)
+                s[i]=1;
+            else
+                s[i]=-1;
+        }
+        break;
+    case 1: //crea una distribucion uniforme (todo -1 o 1)  
+        if(random()<0.5){
+            for(i=0;i<V0;i++)
+                s[i]=1;
+        }
+        else{
+            for(i=0;i<V0;i++)
+                s[i]=-1;
+        }
+        break;
+    case 2: // lee la configuracion de un ficheiro de texto ¿debería ser binario?
+        if((fconfig=fopen("configuracion.txt","rt"))==NULL){
+            printf("No existe o no se puede abrir el archivo de la configuracion inicial");
+            exit(3);
+        }
+        else {
+            for(i=0;i<V0;i++)
+                fscanf(fconfig,"%c",&s[i]);
+        }
+        fclose(fconfig);
+        break;
+    case 3: // esta será la que la crea en ajedrez
+        for(j=0;j<L0;j++)
+            for(i=0;i<L0;i++){
+                s[i+(L0*j)]=pow(-1,i+j);
+            }
+        break;
+    }
+}
+
+void lee_input (double beta_0, double beta_f, double dbeta, int N_Ter, int N_med, int N_met, int semillarapuano){ // se introducen los parametros del sistema además de una bandera para saber cómo elijo la semilla
+    FILE *f_in;
+    if ((f_in=fopen("input.txt","wt"))==NULL){
+        printf("el archivo de input no existe o no se puede abrir");
+        exit(1);
+    }
+    else{
+        fscanf(f_in,"%lf %lf %lf %d %d %d %d",&beta_0,&beta_f,&dbeta,&N_Ter, &N_med, &N_met, &semillarapuano); // de nuevo revisar si hice bien en pasar punteros (diría que sí)
+    }
+}
+
+void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym, int L0){
+    int i;
+    for (i=0;i<(L0-1);i++)
+        xp[i]=1;
+    xp[L0-1]=-(L0-1);
+    for (i=0;i<(L0-1);i++)
+        yp[i]=L0;
+    yp[L0-1]=-L0*(L0-1);
+    for(i=1;i<L0;i++)
+        xm[i]=-1;
+    xm[0]=(L0-1);
+    for(i=1;i<L0;i++)
+        ym[i]=-L0;
+    ym[0]=L0*(L0-1);
 }
 
 void ini_ran(int SEMILLA){ //Parisi-Rupano, NO TOCAR
