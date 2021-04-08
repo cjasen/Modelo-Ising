@@ -51,7 +51,7 @@ main() {
   {
     for(N_betas=0;N_betas<N_pasos;N_beta++)
     {
-      for(j=0;j<N_pasos;j++){//al principio de cada bucle es necesario reiniciar las variables que guardan los resultados a 0
+      for(j=0;j<N_m;j++){//al principio de cada bucle es necesario reiniciar las variables que guardan los resultados a 0
               eres[j]=0;
               mres[j]=0;
        }
