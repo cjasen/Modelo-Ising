@@ -60,10 +60,9 @@ main() {
       for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
       {
         for(N_M=0;N_M<N_Met;N_M++) metropolis(xp,yp,xm,ym,s,prob); //Iteraciones de Monte Carlo
-        Medidas(); //Mido, de aqui sale en cada medicion e y m (si no me equivoco, David)
-        eres[N_m]=e;//Guarda resultados en un cada vector correspondiente
-        mres[N_m]=m;
-        mresabsoluto[N_m]=fabs(m);//lo que se busca es la media del valor absoluto de m
+        eres[N_m]=energia(s,xp,yp);//Guarda resultados en un cada vector correspondiente
+        mres[N_m]=magnetizacion(s);
+        mresabsoluto[N_m]=fabs(mres[N_m]);//lo que se busca es la media del valor absoluto de m
       }
       med_error(eres,N_med,&emedia,&ee);//hago la media y el error de los resultados
       med_error(mresabsoluto,N_med,&mmedia,&em);
