@@ -25,10 +25,11 @@ unsigned char ind_ran,ig1,ig2,ig3;
 extern float random(void);
 extern void ini_ran(int SEMILLA);
 
-FILE*fout;//creo el archivo de resultados
+
 
 main() {
-  
+
+  FILE*fout;//creo el archivo de resultados
   fout=fopen("datos.dat","wt");//esto sirve para reiniciar el archivo de resultados al usar el programa después de haberlo usado
   fclose(fout);
   fout=fopen("datos.dat","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
