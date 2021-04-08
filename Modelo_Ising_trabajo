@@ -33,7 +33,7 @@ main() {
   fclose(fout);
   fout=fopen("datos.dat","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
   double beta, beta_inicial, beta_final, delta_beta, e,ee, emdeia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
-  double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max];
+  double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
   int N_Ter, N_med, N_Met, N_pasos, tipo_semilla;
   int xp[L], xm[L], yp[L], ym[L];
   char s[V];
@@ -60,10 +60,11 @@ main() {
         for(N_M=0;N_M<N_Met;N_M++) metropolis(xp,yp,xm,ym,s,prob); //Iteraciones de Monte Carlo
         Medidas(); //Mido, de aqui sale en cada medicion e y m (si no me equivoco, David)
         eres[N_m]=e;//Guarda resultados en un cada vector correspondiente
-        mres[N_m]=fabs(m);//lo que se busca es la media del valor absoluto de m
+        mres[N_m]=m;
+        mresabsoluto[N_m]=fabs(m);//lo que se busca es la media del valor absoluto de m
       }
       med_error(eres,N_med,&emedia,&ee);//hago la media y el error de los resultados
-      med_error(mres,N_med,&mmedia,&em);
+      med_error(mresabsoluto,N_med,&mmedia,&em);
       for(int j=0;j<N_Met;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
                 eres[j]=eres[j]*eres[j];
                 mres[j]=mres[j]*mres[j];
