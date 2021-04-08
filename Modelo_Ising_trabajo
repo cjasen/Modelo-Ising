@@ -49,7 +49,7 @@ main() {
   beta=beta_inicial;
   for(int sentido=0;sentido<2;sentido++)
   {
-    for(N_betas=0;N_betas<N_pasos;N_beta++)
+    for(N_betas=1;N_betas<N_pasos;N_beta++)
     {
       calcular_prob(prob,beta); //Calculamos la tabla de probabilidad para la nueva beta
       for(N_m=0;N_m<N_Ter;N_m++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion       
