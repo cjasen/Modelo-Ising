@@ -26,19 +26,18 @@ extern float random(void);
 extern void ini_ran(int SEMILLA);
 
 
-
 main() {
+  double beta, beta_inicial, beta_final, delta_beta, e,ee, emdeia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
+  double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
+  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla, N_betas, N_m;
+  int xp[L], xm[L], yp[L], ym[L];
+  char s[V];
 
   FILE*fout;//creo el archivo de resultados
   fout=fopen("datos.dat","wt");//esto sirve para reiniciar el archivo de resultados al usar el programa después de haberlo usado
   fclose(fout);
   fout=fopen("datos.dat","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
-  double beta, beta_inicial, beta_final, delta_beta, e,ee, emdeia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
-  double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
-  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla, N_betas;
-  int xp[L], xm[L], yp[L], ym[L];
-  char s[V];
-
+  
   inicializo_direcciones(xp, yp, xm, ym); 
   lee_input(beta_inicial, beta_final, delta_beta, N_Ter, N_med, N_Met, tipo_semilla); 
   ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no sé poner el tiempo del sistema pues aun no tengo la funcion
@@ -55,7 +54,7 @@ main() {
               mres[j]=0;
        }
       calcular_prob(prob,beta); //Calculamos la tabla de probabilidad para la nueva beta
-      for(N_Met=0;N_Met<N_Ter;N_Met++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion       
+      for(N_m=0;N_m<N_Ter;N_m++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion       
       for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
       {
         for(N_M=0;N_M<N_Met;N_M++) metropolis(xp,yp,xm,ym,s,prob); //Iteraciones de Monte Carlo
