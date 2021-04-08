@@ -15,6 +15,9 @@ void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym); //inicializo lo
 void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
 void calcular_prob(double[], double); //Necesario para optimizar la funcion metropolis()
 void med_error(double *datos, int N_datos, double *media, double *varianza);//calcula la media y el error
+double energia(char[], int[], int[]);
+double magnetizacion(char[]);
+
 
 ///Parisi-Rupano
 #define NormRANu (2.3283063671E-10F)
@@ -81,9 +84,9 @@ main() {
  }
 
 void metropolis(int xp[], int yp[], int xm[], int ym[], char s[], double prob[]){
-    int indice, n=0;
-    for (int y=0; y<L; y++){
-        for (int x=0; x<L; x++){
+    int indice, n=0, int x, int y;
+    for (y=0; y<L; y++){
+        for (x=0; x<L; x++){
             /* Calculamos el indice del vectro prob[] */
             indice=s[n]*(s[n+xp[x]]+s[n+yp[y]]+s[n+xm[x]]+s[n+ym[y]])/2+2; 
             if (random()<prob[indice]) s[n]=-s[n]; //Aceptamos o no el cambio de spin
@@ -187,6 +190,24 @@ void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym){
     for(i=1;i<L;i++)
         ym[i]=-L;
     ym[0]=L*(L-1);
+}
+
+double energia(char s[], int xp[], int yp[]){
+    double u=0;
+    int n=0;
+    for (int j=0;j<L;j++){
+         for (int i=0;i<L;i++)  {
+            u+=(double)s[n]*(s[n+xp[i]]+s[n+yp[j]]);
+            n++;
+        }
+    }
+    return -u/(2*L*L);
+}
+
+double magnetizacion(char s[]){
+    double m=0;
+    for (int i=0;i<L*L;i++)     m+=s[i]; //Sumamos los spines
+    return m/(L*L);
 }
 
 void ini_ran(int SEMILLA){ //Parisi-Rupano, NO TOCAR
