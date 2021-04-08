@@ -29,7 +29,7 @@ extern void ini_ran(int SEMILLA);
 main() {
   double beta, beta_inicial, beta_final, delta_beta, e,ee, emedia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
   double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
-  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla, N_betas, N_m;
+  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla, N_betas, N_m, j;
   int xp[L], xm[L], yp[L], ym[L];
   char s[V];
 
@@ -49,7 +49,7 @@ main() {
   {
     for(N_betas=0;N_betas<N_pasos;N_beta++)
     {
-      for(int j=0;j<N_pasos;j++){//al principio de cada bucle es necesario reiniciar las variables que guardan los resultados a 0
+      for(j=0;j<N_pasos;j++){//al principio de cada bucle es necesario reiniciar las variables que guardan los resultados a 0
               eres[j]=0;
               mres[j]=0;
        }
@@ -65,7 +65,7 @@ main() {
       }
       med_error(eres,N_med,&emedia,&ee);//hago la media y el error de los resultados
       med_error(mresabsoluto,N_med,&mmedia,&em);
-      for(int j=0;j<N_Met;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
+      for(j=0;j<N_Met;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
                 eres[j]=eres[j]*eres[j];
                 mres[j]=mres[j]*mres[j];
         }
