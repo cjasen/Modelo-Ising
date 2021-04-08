@@ -34,7 +34,7 @@ main() {
   fout=fopen("datos.dat","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
   double beta, beta_inicial, beta_final, delta_beta, e,ee, emdeia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
   double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
-  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla;
+  int N_Ter, N_med, N_Met, N_pasos, tipo_semilla, N_betas;
   int xp[L], xm[L], yp[L], ym[L];
   char s[V];
 
