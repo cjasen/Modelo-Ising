@@ -224,7 +224,8 @@ float random(void){ //Nº aleatorio entre [0,1)
 
 void med_error(double *datos, int N_datos, double *media, double *e){
     double sumx=0,sumx2=0;
-    for(int i=0;i<N_datos;i++){
+    int i;
+    for(i=0;i<N_datos;i++){
         sumx=sumx+datos[i];
         sumx2=sumx2+(pow(datos[i],2));
     }
@@ -235,7 +236,8 @@ void med_error(double *datos, int N_datos, double *media, double *e){
 }
 
 void escribe_resultados(double result[][N_Datos_Max], int N_betas){
-    for(int i=0;i<N_betas;i++){
+    int i;
+    for(i=0;i<N_betas;i++){
         fprintf(fout,"%g\t%g\t%g\t%g\t%g\t%g\t%g\n",result[0][i],result[1][i],result[2][i],result[3][i],result[4][i],result[5][i],result[6][i]);//escribo los resultados
     }
 }
