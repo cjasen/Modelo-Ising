@@ -9,7 +9,7 @@
 #define N_Datos_Max 100000
 
 char leer_flag(void);
-void Genera_configuracion_Inicial(char *s, int V0); //Puede generarla o leerla
+void Genera_configuracion_Inicial(char *s); //Puede generarla o leerla
 void lee_input (double beta_0, double beta_f, double dbeta, int N_Ter, int N_med, int N_met, int semillarapuano); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
 void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym); //inicializo los vectores de movimiento
 void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
