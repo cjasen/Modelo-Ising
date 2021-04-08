@@ -78,7 +78,7 @@ main() {
       result[4][N_betas]=em;
       result[5][N_betas]=e2;
       result[6][N_betas]=m2;
-      fprintf(fout,"%g\t%g\t%g\t%g\t%g\t%g\t%g\n",result[0][i],result[1][i],result[2][i],result[3][i],result[4][i],result[5][i],result[6][i]);//escribo los resultados
+      fprintf(fout,"%g\t%g\t%g\t%g\t%g\t%g\t%g\n",beta,emedia,ee,mmedia,em,e2,m2);//escribo los resultados
       Escribe_Informacion_en_Pantalla(); // VA todo bien??
       beta+=delta_beta; //Incremento el valor de beta
       }
