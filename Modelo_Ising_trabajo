@@ -67,7 +67,7 @@ main() {
       for(j=0;j<N_Met;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
                 eres[j]=eres[j]*eres[j];
                 mres[j]=mres[j]*mres[j];
-        }
+      }
       med_error(eres,N_med,&e2,&aux);//calculo la media de e^2 y m^2, como no necesito el error de estos resultados uso el auxiliar aux
       med_error(mres,N_med,&m2,&aux);
       result[0][N_betas]=beta;//introduzco los datos dentro de cada variable
