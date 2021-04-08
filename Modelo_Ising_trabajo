@@ -27,7 +27,7 @@ extern void ini_ran(int SEMILLA);
 
 main() {
   double beta, beta_inicial, beta_final, delta_beta, e,ee, emedia, m, mmedia ,em,e2,m2, aux;//e es energia, m magnetizacion, ee es el error de la energia, em es el error de la magneticacion y e2 y m2 es el cuadrado
-  double prob[], result[7][N_Datos_Max], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
+  double prob[], eres[N_Datos_Max], mres[N_Datos_Max], mresabsoluto[N_Datos_Max];
   int N_Ter, N_med, N_Met, N_pasos, tipo_semilla, N_betas, N_m, j;
   int xp[L], xm[L], yp[L], ym[L];
   char s[V];
@@ -70,13 +70,6 @@ main() {
       }
       med_error(eres,N_med,&e2,&aux);//calculo la media de e^2 y m^2, como no necesito el error de estos resultados uso el auxiliar aux
       med_error(mres,N_med,&m2,&aux);
-      result[0][N_betas]=beta;//introduzco los datos dentro de cada variable
-      result[1][N_betas]=emedia;
-      result[2][N_betas]=ee;
-      result[3][N_betas]=mmedia;
-      result[4][N_betas]=em;
-      result[5][N_betas]=e2;
-      result[6][N_betas]=m2;
       fprintf(fout,"%g\t%g\t%g\t%g\t%g\t%g\t%g\n",beta,emedia,ee,mmedia,em,e2,m2);//escribo los resultados
       Escribe_Informacion_en_Pantalla(); // VA todo bien??
       beta+=delta_beta; //Incremento el valor de beta
