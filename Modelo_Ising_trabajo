@@ -51,13 +51,6 @@ main() {
   {
     for(N_betas=0;N_betas<N_pasos;N_beta++)
     {
-      for(j=0;j<N_med;j++){//al principio de cada bucle es necesario reiniciar las variables que guardan los resultados a 0
-              eres[j]=0;
-              mres[j]=0;
-              mresabsoluto[j]=0;
-              eres2[j]=0;
-              mres2[j]=0;
-       }
       calcular_prob(prob,beta); //Calculamos la tabla de probabilidad para la nueva beta
       for(N_m=0;N_m<N_Ter;N_m++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion       
       for(N_m=0;N_m<N_med;N_m++) //bucle en medidas
