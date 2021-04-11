@@ -272,7 +272,7 @@ double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIM
 double em_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIMACION DEL ERROR DE E O |M| (NO DEL VALOR)
 {                                                                        //Entradas: las mismas que el anterior. Calcula las medias de los bloques y estima el error
     int iem, jem;                                                        //con la desviación típica entre las medias (análisis por bloques). Tendremos que ver
-    double sumb=0, gemb[n_bloques], sumem=0, sumem2=0;                   //para que n_datblo (tanto en esta como en la anterior) el error se estabiliza.
+    double sumb=0, emb[n_bloques], sumem=0, sumem2=0;                   //para que n_datblo (tanto en esta como en la anterior) el error se estabiliza.
     for(iem=0;iem<n_bloques;iem++)                                       //Probablemente se puedan fusionar las dos funciones pero lo he hecho separado de primeras para aclararme.
     {
         for(jem=0;jem<n_datblo;jem++)
