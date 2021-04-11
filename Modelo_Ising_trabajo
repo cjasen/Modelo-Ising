@@ -247,7 +247,7 @@ double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIM
 {                                                                        //n_bloques*n_datblo <= N_m (idealmente igual), vnorm: vector de e o m para un beta
     int ics, jcs;                                                        //Divide vnorm en n_bloques de n_datblo valores de e o m, y calcula el CV o X para cada bloque
     double sumb=0,sumb2=0, gb[ne_bloques], sumg=0, sumg2=0;              //Con la desviación típica de estos CV o X estima el error, pero el valor real se calcula sin
-    for(ics=0;ics<n_bloques;ics++)                                       //análisis por bloques
+    for(ics=0;ics<n_bloques;ics++)                                       //análisis por bloques.
     {
         for(jcs=0;jcs<n_datblo;jcs++)
         {
@@ -261,4 +261,22 @@ double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIM
         sumg2+=gb[ics]*gb[ics];
     }
     return sqrt((sumg2/n_bloques-sumg*sumg/(n_bloques*n_bloques))/n_bloques);
+}
+
+double em_error(int n_bloques, int n_datblo, double *vnorm)             //ESTIMACION DEL ERROR DE E O |M| (NO DEL VALOR)
+{                                                                       //Entradas: las mismas que el anterior. Calcula las medias de los bloques y estima el error
+    int iem, jem;                                                       //con la desviación típica entre las medias (análisis por bloques). Tendremos que ver
+    double sumb=0, gemb[ne_bloques], sumem=0, sumem2=0;                 //para que n_datblo (tanto en esta como en la anterior) el error se estabiliza.
+    for(iem=0;iem<n_bloques;iem++)                                      //Probablemente se puedan fusionar las dos funciones pero lo he hecho separado de primeras para aclararme.
+    {
+        for(jem=0;jem<n_datblo;jem++)
+        {
+            sumb+=vnorm[n_datblo*iem+jem];
+        }
+        emb[iem]=sumb/n_datblo;
+        sumb=0;
+        sumem+=emb[iem];
+        sumem2+=emb[iem]*emb[iem];
+    }
+    return sqrt((sumem2/n_bloques-sumem*sumem/(n_bloques*n_bloques))/n_bloques);
 }
