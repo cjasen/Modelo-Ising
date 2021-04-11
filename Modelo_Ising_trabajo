@@ -243,22 +243,22 @@ void med_error(double *datos, int N_datos, double *media, double *e){
     *e=sqrt((sumx2-sumx)/(N_datos-1));
 }
 
-double g_error(int n_bloques, int n_datblo, double *vnorm)               //ESTIMACION DEL ERROR DE CV O X (NO DEL VALOR)
+double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIMACION DEL ERROR DE CV O X (NO DEL VALOR)
 {                                                                        //n_bloques*n_datblo <= N_m (idealmente igual), vnorm: vector de e o m para un beta
-    int icme, jcme;                                                      //Divide vnorm en n_bloques de n_datblo valores de e o m, y calcula el CV o X para cada bloque
+    int ics, jcs;                                                        //Divide vnorm en n_bloques de n_datblo valores de e o m, y calcula el CV o X para cada bloque
     double sumb=0,sumb2=0, gb[ne_bloques], sumg=0, sumg2=0;              //Con la desviación típica de estos CV o X estima el error, pero el valor real se calcula sin
-    for(icme=0;icme<n_bloques;icme++)                                    //análisis por bloques
+    for(ics=0;ics<n_bloques;ics++)                                       //análisis por bloques
     {
-        for(jcme=0;jcme<n_datblo;jcme++)
+        for(jcs=0;jcs<n_datblo;jcs++)
         {
-            sumb+=vnorm[n_datblo*icme+jcme];
-            sumb2+=vnorm[n_datblo*icme+jcme]*enorm[n_datblo*icme+jcme];
+            sumb+=vnorm[n_datblo*ics+jcs];
+            sumb2+=vnorm[n_datblo*ics+jcs]*vnorm[n_datblo*ics+jcs];
         }
-        gb[icme]=L*L(sumb2/n_datblo-sumb*sumb/(n_datblo*n_datblo));
+        gb[ics]=V*(sumb2/n_datblo-sumb*sumb/(n_datblo*n_datblo));
         sumb=0;
         sumb2=0;
-        sumg+=gb[icme];
-        sumg2+=gb[icme]*gb[icme];
+        sumg+=gb[ics];
+        sumg2+=gb[ics]*gb[ics];
     }
     return sqrt((sumg2/n_bloques-sumg*sumg/(n_bloques*n_bloques))/n_bloques);
 }
