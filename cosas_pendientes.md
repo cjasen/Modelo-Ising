@@ -3,9 +3,8 @@ Trabajo de física computacional
 
 Cosas pendientes:
 
-  -Implementar función para calcular el calor específico y esas cosas, estas funciones deben ir antes del fprintf, y añadir el escribir esos valores dentro del fprintf 
+-Función escribir_pantalla
 
-  -Hacer el análisis de bloques en cada bucle de las betas
+-Meter N_bloques y el otro valor de esa función
   
-  -Línea 163, en void lee input, los argumentos creo que hay que pasarlos por punteros
 
