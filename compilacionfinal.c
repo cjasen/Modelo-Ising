@@ -20,6 +20,8 @@ double energia(char[], int[], int[]);
 double magnetizacion(char[]);
 double cs_error(int n_bloques, int n_datblo, double *vnorm);
 double em_error(int n_bloques, int n_datblo, double *vnorm);
+void escribe(char s[],FILE *fdebug);
+    
 
 
 ///Parisi-Rupano
@@ -44,10 +46,12 @@ int main() {
         printf("declaro cosas");
     #endif // DEBUG
 
-  FILE*fout;//creo el archivo de resultados
-  fout=fopen("datos.txt","wt");//esto sirve para reiniciar el archivo de resultados al usar el programa después de haberlo usado
+  FILE*fdebug;  //se utiliza en la funcion escribe(), que saca un archivo para mirar una configuracion con gnuplot
+  fdebug=fopen("conf_debug.dat","wb");
+  FILE*fout;    //creo el archivo de resultados
+  fout=fopen("datos.txt","wt"); //esto sirve para reiniciar el archivo de resultados al usar el programa después de haberlo usado
   fclose(fout);
-  fout=fopen("datos.txt","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
+  fout=fopen("datos.txt","at"); //abro el archivo en el que se van a escribir los resultados, es de tipo append
     #ifdef DEBUG
         printf("declarar declaro la verdad \n");
     #endif
@@ -308,3 +312,6 @@ double em_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIM
     return sqrt((sumem2/n_bloques-sumem*sumem/(n_bloques*n_bloques))/n_bloques);
 }
 
+void escribe(char s[],FILE *fdebug){
+     for(int i=0;i<L*L;i++) 	fprintf(fdebug,"%d%c",s[i],(i+1)%L==0?'\n':' ');
+}
