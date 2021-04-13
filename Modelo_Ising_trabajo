@@ -243,10 +243,10 @@ void med_error(double *datos, int N_datos, double *media, double *e){
         sumx=sumx+datos[i];
         sumx2=sumx2+(pow(datos[i],2));
     }
-    *media=sumx/N_datos;
+    media=sumx/N_datos;
     sumx2=sumx2/N_datos;
-    sumx=pow(*media,2);
-    *e=sqrt((sumx2-sumx)/(N_datos-1));
+    sumx=pow(media,2);
+    e=sqrt((sumx2-sumx)/(N_datos-1));
 }
 
 double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIMACION DEL ERROR DE CV O X (NO DEL VALOR)
