@@ -6,7 +6,7 @@
 #define L 4
 #define V L*L
 #define DEBUG
-#define N_Datos_Max 50000
+#define N_Datos_Max 100
 
 
 char leer_flag(void);
@@ -45,7 +45,7 @@ int main() {
     #endif // DEBUG
 
   FILE*fout;//creo el archivo de resultados
-  fout=fopen("datos.txt","wt");//esto sirve para reiniciar el archivo de resultados al usar el programa despuÈs de haberlo usado
+  fout=fopen("datos.txt","wt");//esto sirve para reiniciar el archivo de resultados al usar el programa despu√©s de haberlo usado
   fclose(fout);
   fout=fopen("datos.txt","at");//abro el archivo en el que se van a escribir los resultados, es de tipo append
     #ifdef DEBUG
@@ -57,7 +57,7 @@ int main() {
     #ifdef DEBUG
         printf("%lf", beta_final);
     #endif // DEBUG
-  ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no sÈ poner el tiempo del sistema pues aun no tengo la funcion
+  ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no s√© poner el tiempo del sistema pues aun no tengo la funcion
   Genera_configuracion_Inicial(s);
     #ifdef DEBUG
         printf("%c",s[1]);
@@ -86,7 +86,7 @@ int main() {
       med_error(eres2,N_med,&e2,&aux);//calculo la media de e^2 y m^2, como no necesito el error de estos resultados uso el auxiliar aux
       med_error(mres2,N_med,&m2,&aux);
       cv=V*(e2-emedia*emedia); //calculo del calor especifico, y abajo su error
-      ecv=cs_error(10,10,eres); /// LOS DOS PRIMEROS VALORES DE AQUÕ LOS HE PUESTO POR PONER
+      ecv=cs_error(10,10,eres); /// LOS DOS PRIMEROS VALORES DE AQU√ç LOS HE PUESTO POR PONER
       sx=V*(m2-mmedia*mmedia); //calculo de x (chi), y abajo su error
       esx=cs_error(10,10,mres);
       fprintf(fout,"%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\t%g\n",beta,emedia,ee,mmedia,em,e2,m2,cv,ecv,sx,esx);//escribo los resultados
@@ -149,7 +149,7 @@ void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
     #endif // DEBUG
     FILE *fconfig;
     switch(bandera){
-    case 0: // crea una distribucion random (ødeberÌa implementar parisi-rapuano?)
+    case 0: // crea una distribucion random (¬ødeber√≠a implementar parisi-rapuano?)
         for(i=0;i<V;i++){
             if(random()<0.5)
                 s[i]=1;
@@ -167,7 +167,7 @@ void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
                 s[i]=-1;
         }
         break;
-    case 2: // lee la configuracion de un ficheiro de texto ødeberÌa ser binario?
+    case 2: // lee la configuracion de un ficheiro de texto ¬ødeber√≠a ser binario?
         if((fconfig=fopen("configuracion.txt","rt"))==NULL){
             printf("No existe o no se puede abrir el archivo de la configuracion inicial");
             exit(3);
@@ -178,7 +178,7 @@ void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
         }
         fclose(fconfig);
         break;
-    case 3: // esta ser· la que la crea en ajedrez
+    case 3: // esta ser√° la que la crea en ajedrez
         for(j=0;j<L;j++)
             for(i=0;i<L;i++){
                 s[i+(L*j)]=pow(-1,i+j);
@@ -187,14 +187,14 @@ void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
     }
 }
 
-void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *semillarapuano){ // se introducen los parametros del sistema adem·s de una bandera para saber cÛmo elijo la semilla
+void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *semillarapuano){ // se introducen los parametros del sistema adem√°s de una bandera para saber c√≥mo elijo la semilla
     FILE *f_in;
     if ((f_in=fopen("input.txt","rt"))==NULL){
         printf("el archivo de input no existe o no se puede abrir");
         exit(1);
     }
     else{
-        fscanf(f_in,"%lf %lf %lf %d %d %d %d",beta_0,beta_f,dbeta,N_Ter, N_med, N_met, semillarapuano); // de nuevo revisar si hice bien en pasar punteros (dirÌa que sÌ)
+        fscanf(f_in,"%lf %lf %lf %d %d %d %d",beta_0,beta_f,dbeta,N_Ter, N_med, N_met, semillarapuano); // de nuevo revisar si hice bien en pasar punteros (dir√≠a que s√≠)
     }
 }
 
@@ -245,7 +245,7 @@ void ini_ran(int SEMILLA){ //Parisi-Rupano, NO TOCAR
     ind_ran=ig1=ig2=ig3=0;
 }
 
-float random(void){ //N∫ aleatorio entre [0,1)
+float random(void){ //N¬∫ aleatorio entre [0,1)
     float r;
     ig1=ind_ran-24;
     ig2=ind_ran-55;
@@ -273,8 +273,8 @@ void med_error(double *datos, int N_datos, double *media, double *e){
 double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIMACION DEL ERROR DE CV O X (NO DEL VALOR)
 {                                                                        //n_bloques*n_datblo <= N_m (idealmente igual), vnorm: vector de e o m para un beta
     int ics, jcs;                                                        //Divide vnorm en n_bloques de n_datblo valores de e o m, y calcula el CV o X para cada bloque
-    double sumb=0,sumb2=0, gb[n_bloques], sumg=0, sumg2=0;               //Con la desviaciÛn tÌpica de estos CV o X estima el error, pero el valor real se calcula sin
-    for(ics=0;ics<n_bloques;ics++)                                       //an·lisis por bloques.
+    double sumb=0,sumb2=0, gb[n_bloques], sumg=0, sumg2=0;               //Con la desviaci√≥n t√≠pica de estos CV o X estima el error, pero el valor real se calcula sin
+    for(ics=0;ics<n_bloques;ics++)                                       //an√°lisis por bloques.
     {
         for(jcs=0;jcs<n_datblo;jcs++)
         {
@@ -292,7 +292,7 @@ double cs_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIM
 
 double em_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIMACION DEL ERROR DE E O |M| (NO DEL VALOR)
 {                                                                        //Entradas: las mismas que el anterior. Calcula las medias de los bloques y estima el error
-    int iem, jem;                                                        //con la desviaciÛn tÌpica entre las medias (an·lisis por bloques). Tendremos que ver
+    int iem, jem;                                                        //con la desviaci√≥n t√≠pica entre las medias (an√°lisis por bloques). Tendremos que ver
     double sumb=0, emb[n_bloques], sumem=0, sumem2=0;                   //para que n_datblo (tanto en esta como en la anterior) el error se estabiliza.
     for(iem=0;iem<n_bloques;iem++)                                       //Probablemente se puedan fusionar las dos funciones pero lo he hecho separado de primeras para aclararme.
     {
