@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
+#include <time.h>
 
 #define L 8
 #define V L*L
@@ -11,7 +12,7 @@
 
 char leer_flag(void);
 void Genera_configuracion_Inicial(char *s); //Puede generarla o leerla
-void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *N_db, int *semillarapuano); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
+void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *N_db); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
 void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym); //inicializo los vectores de movimiento
 void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
 void calcular_prob(double[], double); //Necesario para optimizar la funcion metropolis()
@@ -29,7 +30,7 @@ unsigned int irr[256];
 unsigned int ir1;
 unsigned char ind_ran,ig1,ig2,ig3;
 extern float random(void);
-extern void ini_ran(int SEMILLA);
+extern void ini_ran(int semillarda);
 
 
 int main() {
@@ -46,8 +47,8 @@ int main() {
   fclose(fout);
   fout=fopen("datos.txt","at"); //abro el archivo en el que se van a escribir los resultados, es de tipo append
   inicializo_direcciones(xp, yp, xm, ym);
-  lee_input(&beta_inicial, &beta_final, &delta_beta, &N_Ter, &N_med, &N_Met, &N_datblo, &tipo_semilla);
-  ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no sé poner el tiempo del sistema pues aun no tengo la funcion
+  lee_input(&beta_inicial, &beta_final, &delta_beta, &N_Ter, &N_med, &N_Met, &N_datblo);
+  ini_ran(time(NULL)); //la semilla hay que cambiarla en algun punto, pero como no sé poner el tiempo del sistema pues aun no tengo la funcion
 
   Genera_configuracion_Inicial(s);
   #ifdef DEBUG
@@ -176,14 +177,14 @@ void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
     }
 }
 
-void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *N_db, int *semillarapuano){ // se introducen los parametros del sistema además de una bandera para saber cómo elijo la semilla
+void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *N_db){ // se introducen los parametros del sistema además de una bandera para saber cómo elijo la semilla
     FILE *f_in;
     if ((f_in=fopen("input.txt","rt"))==NULL){
         printf("el archivo de input no existe o no se puede abrir");
         exit(1);
     }
     else{
-        fscanf(f_in,"%lf %lf %lf %d %d %d %d %d",beta_0,beta_f,dbeta,N_Ter, N_med, N_met, N_db, semillarapuano); // de nuevo revisar si hice bien en pasar punteros (diría que sí)
+        fscanf(f_in,"%lf %lf %lf %d %d %d %d",beta_0,beta_f,dbeta,N_Ter, N_med, N_met, N_db); // de nuevo revisar si hice bien en pasar punteros (diría que sí)
     }
 }
 
@@ -223,7 +224,6 @@ double magnetizacion(char s[]){
 
 void ini_ran(int SEMILLA){ //Parisi-Rupano, NO TOCAR
     int INI,FACTOR,SUM,i;
-    srand(SEMILLA);
     INI=SEMILLA;
     FACTOR=67397;
     SUM=7364893;
@@ -300,3 +300,4 @@ double em_error(int n_bloques, int n_datblo, double *vnorm)              //ESTIM
 void escribe(char s[],FILE *fdebug){
      for(int i=0;i<L*L;i++) 	fprintf(fdebug,"%d%c",s[i],(i+1)%L==0?'\n':' ');
 }
+
