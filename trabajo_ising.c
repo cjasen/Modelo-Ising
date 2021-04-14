@@ -1,21 +1,17 @@
-#include <math.h>
-#include <stdio.h>
-#include <stdlib.h>
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include <string.h>
 
-#define L 4
+#define L 8
 #define V L*L
 #define DEBUG
-#define N_Datos_Max 100
+#define N_Datos_Max 500
 
 
 char leer_flag(void);
 void Genera_configuracion_Inicial(char *s); //Puede generarla o leerla
-void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *semillarapuano); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
+void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *N_db, int *semillarapuano); //Lee beta_inicial, beta_final,delta_beta,N_Ter,N_med,N_Met y la bandera para el tipo de semilla, si quereis lo puedo cambiar de sitio
 void inicializo_direcciones(int *xp, int *yp, int *xm, int *ym); //inicializo los vectores de movimiento
 void metropolis(int[], int[], int[], int[], char[], double[]); //Actualiza los spines de una configuracion y decide si acepta o no el cambio
 void calcular_prob(double[], double); //Necesario para optimizar la funcion metropolis()
@@ -50,7 +46,7 @@ int main() {
   fclose(fout);
   fout=fopen("datos.txt","at"); //abro el archivo en el que se van a escribir los resultados, es de tipo append
   inicializo_direcciones(xp, yp, xm, ym);
-  lee_input(&beta_inicial, &beta_final, &delta_beta, &N_Ter, &N_med, &N_Met, &tipo_semilla);
+  lee_input(&beta_inicial, &beta_final, &delta_beta, &N_Ter, &N_med, &N_Met, &N_datblo, &tipo_semilla);
   ini_ran(123456789); //la semilla hay que cambiarla en algun punto, pero como no sé poner el tiempo del sistema pues aun no tengo la funcion
 
   Genera_configuracion_Inicial(s);
@@ -62,11 +58,10 @@ int main() {
 
   N_pasos=(beta_final-beta_inicial)/delta_beta;//atencion: N_pasos es entero
   beta=beta_inicial;
-  N_datblo=50;
   N_bloques=N_med/N_datblo;
   for(int sentido=0;sentido<1;sentido++)
   {
-    for(N_betas=1;N_betas<N_pasos;N_betas++)
+    for(N_betas=0;N_betas<=N_pasos+1;N_betas++)
     {
       calcular_prob(prob,beta); //Calculamos la tabla de probabilidad para la nueva beta
       for(N_m=0;N_m<N_Ter;N_m++) metropolis(xp,yp,xm,ym,s,prob); //Proceso de termallizacion
@@ -79,14 +74,14 @@ int main() {
       }
       med_error(eres,N_med,&emedia,&ee);//hago la media y el error de los resultados
       med_error(mresabsoluto,N_med,&mmedia,&em);
-      for(j=0;j<N_Met;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
+      for(j=0;j<N_med;j++){//elevo cada termino de e y m al cuadrado para calcular la media de e^2 y m^2
                 eres2[j]=eres[j]*eres[j];
                 mres2[j]=mres[j]*mres[j];
       }
       med_error(eres2,N_med,&e2,&aux);//calculo la media de e^2 y m^2, como no necesito el error de estos resultados uso el auxiliar aux
       med_error(mres2,N_med,&m2,&aux);
       cv=V*(e2-emedia*emedia); //calculo del calor especifico, y abajo su error
-      ecv=cs_error(N_datblo,N_bloques,eres); // LOS DOS PRIMEROS VALORES DE AQUÍ LOS HE PUESTO POR PONER
+      ecv=cs_error(N_datblo,N_bloques,eres);
       sx=V*(m2-mmedia*mmedia); //calculo de x (chi), y abajo su error
       esx=cs_error(N_datblo,N_bloques,mres);
       fprintf(fout,"%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n",beta,emedia,ee,mmedia,em,e2,m2,cv,ecv,sx,esx);//escribo los resultados
@@ -181,14 +176,14 @@ void Genera_configuracion_Inicial(char *s){ //crea la configuracion inicial
     }
 }
 
-void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *semillarapuano){ // se introducen los parametros del sistema además de una bandera para saber cómo elijo la semilla
+void lee_input (double *beta_0, double *beta_f, double *dbeta, int *N_Ter, int *N_med, int *N_met, int *N_db, int *semillarapuano){ // se introducen los parametros del sistema además de una bandera para saber cómo elijo la semilla
     FILE *f_in;
     if ((f_in=fopen("input.txt","rt"))==NULL){
         printf("el archivo de input no existe o no se puede abrir");
         exit(1);
     }
     else{
-        fscanf(f_in,"%lf %lf %lf %d %d %d %d",beta_0,beta_f,dbeta,N_Ter, N_med, N_met, semillarapuano); // de nuevo revisar si hice bien en pasar punteros (diría que sí)
+        fscanf(f_in,"%lf %lf %lf %d %d %d %d %d",beta_0,beta_f,dbeta,N_Ter, N_med, N_met, N_db, semillarapuano); // de nuevo revisar si hice bien en pasar punteros (diría que sí)
     }
 }
 
