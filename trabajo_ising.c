@@ -81,8 +81,8 @@ int main() {
       }
       med_error(eres2,N_med,&e2,&aux);//calculo la media de e^2 y m^2, como no necesito el error de estos resultados uso el auxiliar aux
       med_error(mres2,N_med,&m2,&aux);
-      cv=V*(e2-emedia*emedia); //calculo del calor especifico, y abajo su error
-      ecv=cs_error(N_datblo,N_bloques,eres);
+      cv=2*V*(e2-emedia*emedia); //calculo del calor especifico, y abajo su error
+      ecv=2*cs_error(N_datblo,N_bloques,eres);
       sx=V*(m2-mmedia*mmedia); //calculo de x (chi), y abajo su error
       esx=cs_error(N_datblo,N_bloques,mres);
       fprintf(fout,"%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n",beta,emedia,ee,mmedia,em,e2,m2,cv,ecv,sx,esx);//escribo los resultados
