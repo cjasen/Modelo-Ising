@@ -84,7 +84,7 @@ int main() {
       cv=2*V*(e2-emedia*emedia); //calculo del calor especifico, y abajo su error
       ecv=2*cs_error(N_datblo,N_bloques,eres);
       sx=V*(m2-mmedia*mmedia); //calculo de x (chi), y abajo su error
-      esx=cs_error(N_datblo,N_bloques,mres);
+      esx=cs_error(N_datblo,N_bloques,mresabsoluto);
       fprintf(fout,"%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\t%lf\n",beta,emedia,ee,mmedia,em,e2,m2,cv,ecv,sx,esx);//escribo los resultados
       //Escribe_Informacion_en_Pantalla(); // VA todo bien??
       beta+=delta_beta; //Incremento el valor de beta
