@@ -1,7 +1,0 @@
-beta inicial
-beta final
-incremento de beta
-termalizacion
-medidas
-pasos de metropolis
-datos por bloque (analisis de errores)
