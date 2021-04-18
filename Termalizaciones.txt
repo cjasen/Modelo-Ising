@@ -2,3 +2,13 @@
 L=8; beta=0,45; N_ter=50 pasos
 L=12; beta=0,45; N_ter=140 pasos (seguramente con 100 sobrara, pero por uas más que probables fluctuaciones estadisticas en esos 40 primeros valores decidi eliminarlas)
 L=16; beta=0,45; N_ter=80 pasos
+
+CARLOS ASENSIO COSA:
+
+08:  55
+12:  70
+16:  85
+24: 100
+48:  115
+64:  145
+128: 250
