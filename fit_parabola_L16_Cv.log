@@ -1,0 +1,36 @@
+
+*******************************************************************************
+Mon Apr 19 19:01:10 2021 
+
+
+FIT:    data read from "datos.txt" u 1:8:9 yerrors
+        format = x:z:s
+        #datapoints = 141
+function used for fitting: g(x)
+	g(x)=m*x*x+n*x+l
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             n             l            
+   0 6.4761993469e+02   0.00e+00  6.47e+03   -1.260957e+03   1.074362e+03  -2.246845e+02
+   5 3.6897065609e+02  -6.84e-01  6.47e-02   -1.143077e+03   9.720995e+02  -2.025398e+02
+
+After 5 iterations the fit converged.
+final sum of squares of residuals : 368.971
+rel. change during last iteration : -6.84319e-06
+
+degrees of freedom    (FIT_NDF)                        : 138
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 1.63515
+variance of residuals (reduced chisquare) = WSSR/ndf   : 2.6737
+p-value of the Chisq distribution (FIT_P)              : 0
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = -1143.08         +/- 17.93        (1.569%)
+n               = 972.1            +/- 15.25        (1.568%)
+l               = -202.54          +/- 3.234        (1.597%)
+
+correlation matrix of the fit parameters:
+                m      n      l      
+m               1.000 
+n              -1.000  1.000 
+l               0.999 -1.000  1.000 
