@@ -1,0 +1,35 @@
+*******************************************************************************
+Mon Apr 19 16:13:00 2021 #FIT PARABOLA L8 CV
+
+
+FIT:    data read from "datos.txt" u 1:8:9 yerrors
+        format = x:z:s
+        #datapoints = 201
+function used for fitting: g(x)
+	g(x)=m*x*x+n*x+l
+fitted parameters initialized with current variable values
+
+iter      chisq       delta/lim  lambda   m             n             l            
+   0 3.4016716687e+05   0.00e+00  1.65e+01    1.000000e+00   1.000000e+00   1.000000e+00
+   6 3.6671234125e+02  -2.82e-08  1.65e-05   -3.463228e+02   2.802476e+02  -5.327518e+01
+
+After 6 iterations the fit converged.
+final sum of squares of residuals : 366.712
+rel. change during last iteration : -2.82425e-13
+
+degrees of freedom    (FIT_NDF)                        : 198
+rms of residuals      (FIT_STDFIT) = sqrt(WSSR/ndf)    : 1.36091
+variance of residuals (reduced chisquare) = WSSR/ndf   : 1.85208
+p-value of the Chisq distribution (FIT_P)              : 3.3461e-12
+
+Final set of parameters            Asymptotic Standard Error
+=======================            ==========================
+m               = -346.323         +/- 4.759        (1.374%)
+n               = 280.248          +/- 3.81         (1.36%)
+l               = -53.2752         +/- 0.7593       (1.425%)
+
+correlation matrix of the fit parameters:
+                m      n      l      
+m               1.000 
+n              -0.999  1.000 
+l               0.998 -0.999  1.000 
